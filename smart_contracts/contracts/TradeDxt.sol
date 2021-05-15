@@ -43,7 +43,7 @@ contract TradeDxt is Dextr, TradeHelper {
     }
     function sellDxt(address payable _buyer, address payable _seller, uint256 _amount) public nonZeroAddress(_buyer) payable {
         //check with shadab how to transfer ether between addresses
-        9require(_amount == purchaseRequests[_buyer]._amount && purchaseRequests[_buyer].completed == false,
+        require(_amount == purchaseRequests[_buyer]._amount && purchaseRequests[_buyer].completed == false,
         "Sell amount and requested buy amount mismatch / already sold.");
         //PurchaseRequest memory purchaseReq = purchaseRequests[_buyer];
         emit CompletedTransaction(_buyer, _seller, _amount);
