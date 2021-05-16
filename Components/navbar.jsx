@@ -121,8 +121,8 @@ const Navbar = () => {
 				<li
 					className={
 						router.pathname === "/"
-							? `px-5 hover:underline mx-auto font-semibold border-b-4 border-gray-100 pt-5`
-							: "px-5 hover:underline mx-auto font-semibold pt-5 hover:border-b-4 border-gray-100"
+							? `px-5 hover:underline mx-auto font-semibold border-b-4 border-pink-400 pt-5`
+							: "px-5 hover:underline mx-auto font-semibold pt-5"
 					}
 				>
 					{/* border-b-4 tradepage */}
@@ -133,8 +133,8 @@ const Navbar = () => {
 				<li
 					className={
 						router.pathname === "/transactions"
-							? `px-5 h-full hover:underline mx-auto font-semibold border-b-4 border-gray-100 pt-5`
-							: "px-5 h-full hover:underline mx-auto font-semibold pt-5 hover:border-b-4 border-gray-100"
+							? `px-5 h-full hover:underline mx-auto font-semibold border-b-4 border-pink-400 pt-5`
+							: "px-5 h-full hover:underline mx-auto font-semibold pt-5"
 					}
 					// border-b-4 transactionspage
 				>

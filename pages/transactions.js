@@ -14,7 +14,7 @@ const Transactions = () => {
 				<title>{siteTitle}</title>
 			</Head>
 			<Navbar />
-			<Wallet />
+			{/* <Wallet /> */}
 			<Footer />
 		</div>
 	);

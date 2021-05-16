@@ -1,21 +1,22 @@
 import React from "react";
-import WalletDetails from "./walletDetails";
-import WalletPortfolio from "./walletPortfolio";
-import WalletTransactions from "../transactions/walletTransactions";
-import WalletProfile from "./walletProfile";
+// import WalletDetails from "./walletDetails";
+// import WalletPortfolio from "./walletPortfolio";
+// import WalletTransactions from "../transactions/walletTransactions";
+// import WalletProfile from "./walletProfile";
 import { useRouter } from "next/router";
 import PendingTransactions from "../transactions/pendingTransactions";
 import { Switch } from "@headlessui/react";
 import { useState, useEffect } from "react";
-import { FiSettings } from "react-icons/fi";
+// import { FiSettings } from "react-icons/fi";
 import { MdLoop } from "react-icons/md";
 import Web3 from "web3";
+import GraphData from "./graphdata";
 
 const PlatformInfo = () => {
 	return (
 		<div className="bg-gray-100">
 			<div className="space-x-4">
-				<h3 className="flow-root p-20 font-mono text-center">
+				<h3 className="flow-root m-20 font-mono text-center">
 					Powered using...
 				</h3>
 			</div>
@@ -40,6 +41,15 @@ const PlatformInfo = () => {
 					/>
 					{/* <span>Solidity</span> */}
 				</div>
+				<div className="rounded-lg bg-transparent w-96 p-20">
+					{/* Next.js icon */}
+					<img
+						src="/images/the-graph.svg"
+						alt="thegraph"
+						className="w-2/3 mx-auto"
+					/>
+					{/* <span>Solidity</span> */}
+				</div>
 			</div>
 		</div>
 	);
@@ -49,6 +59,7 @@ const Wallet = ({ graphdata }) => {
 	// const router = useRouter();
 	const [enabled, setEnabled] = useState(true);
 	const [connection, setConnection] = useState("Not Connected");
+	const [data, setData] = useState([]);
 
 	useEffect(() => {
 		//load all pending purchase events into list here from contract
@@ -90,9 +101,10 @@ const Wallet = ({ graphdata }) => {
 		//does nothing yet
 		e.preventDefault();
 		//console.log(graphdata);
-		graphdata.then((uniswapgraph) => {
-			console.log(uniswapgraph.data.data.pairs);
-		});
+		// graphdata.then((uniswapgraph) => {
+		// 	console.log(uniswapgraph.data.data.pairs);
+		// 	setData(uniswapgraph.data.data.pairs);
+		// });
 		if (typeof window.ethereum !== "undefined") {
 			console.log("MetaMask is installed!");
 		}
@@ -120,7 +132,7 @@ const Wallet = ({ graphdata }) => {
 				className=" 
 				flex flex-col items-center
 			    mx-auto 
-				w-2/3 md:w-2/6 sm:w-3/5 sm:h-3/6 xl:w-1/4 xs:1/3 xl:h-auto
+				w-1/3 md:w-2/6 sm:w-3/5 sm:h-3/6 xl:w-1/4 xs:1/3 xl:h-auto
 				bg-gray-800 
 				rounded-xl shadow-2xl 
 				xl:md:sm:transition ease-in-out duration-500"
@@ -147,7 +159,7 @@ const Wallet = ({ graphdata }) => {
 						checked={enabled}
 						onChange={setEnabled}
 						className={`${
-							enabled ? "bg-blue-600" : "bg-pink-700"
+							enabled ? "bg-blue-600" : "bg-pink-400"
 						} relative inline-flex items-center h-8 w-16 rounded-full w-11 focus:outline-none mx-auto my-5`}
 					>
 						<span className="not-sr-only absolute top-2 left-0 pl-2 text-xs text-white">
@@ -167,22 +179,23 @@ const Wallet = ({ graphdata }) => {
 						{/* <div></div> */}
 						<input
 							type="number"
-							className="rounded-xl mx-auto mb-3 py-5 px-10 w-4/5 font-mono bg-gray-700 text-white text-xl focus:outline-none"
+							className="rounded-xl mx-auto mb-5 py-5 px-10 w-4/5 font-mono bg-gray-700 text-white text-xl focus:outline-none"
 							id="token1"
 							placeholder={enabled ? "ETH" : "DXT"}
 						/>
 						<button className="focus:outline-none" onClick={swapTokens}>
 							{/* <IoIosArrowUp className="mx-auto mb-3 text-gray-500 focus:outline-none hover:text-white hover:transition ease-in-out duration-300" /> */}
-							<MdLoop
+							{/* <MdLoop
 								className="mx-auto mb-3 text-gray-500 focus:outline-none hover:text-white hover:transition ease-in-out duration-300 transform rotate-90 hover:-rotate-90"
 								id="swapIcon"
-							/>
+							/> */}
 						</button>
 						<input
 							type="number"
-							className="rounded-xl mx-auto mb-3 py-5 px-10 w-4/5 font-mono bg-gray-700 text-white text-xl focus:outline-none"
+							className="rounded-xl mx-auto py-5 px-10 w-4/5 font-mono bg-gray-700 text-white text-xl focus:outline-none"
 							placeholder={enabled ? "DXT" : "ETH"}
 							id="token2"
+							disabled
 						/>
 					</div>
 
@@ -209,7 +222,7 @@ const Wallet = ({ graphdata }) => {
 								type="submit"
 								value="Sell"
 								className={`rounded-b-xl mx-auto w-full py-5 text-white 
-							hover:transition ease-in-out duration-600 bg-pink-700 hover:bg-pink-800 mt-20
+							hover:transition ease-in-out duration-600 bg-pink-400 hover:bg-pink-500 mt-20
 							`}
 								onClick={submitPurchase}
 							/>
@@ -218,6 +231,7 @@ const Wallet = ({ graphdata }) => {
 				</form>
 				{/* </div> */}
 			</section>
+			<GraphData graphdata={data} />
 			<PlatformInfo />
 		</div>
 	);
