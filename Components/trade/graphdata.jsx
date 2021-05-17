@@ -22,29 +22,34 @@ const GraphData = ({ graphdata }) => {
 				"https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
 				{
 					query: `
-					{
-						pairs (
-						  orderBy: volumeUSD, 
-						  orderDirection: desc
-						  where: {
-							token0_contains: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-						  },
-						  first: 25
-						) {
-						  token0 {
-							symbol
-							tradeVolumeUSD
-						  }
-						  token1 {
-							symbol
-							tradeVolumeUSD
-						  }
-						}
-					  }					  
+						{
+							pairs (
+								orderBy: volumeUSD, 
+								orderDirection: desc
+								where: {
+									token0_contains: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+								},
+								first: 25
+							){
+								token0 {
+									symbol
+									tradeVolumeUSD
+									totalSupply
+									derivedETH	
+								}
+								token1 {
+									symbol
+									tradeVolumeUSD
+									totalSupply
+									derivedETH
+								}
+								txCount
+							}
+						}				
 					`,
 				}
 			);
-			console.log(data.data.data.pairs);
+			// console.log(data.data.data.pairs);
 			setData(data.data.data.pairs);
 			return data;
 		} catch (e) {
@@ -52,16 +57,19 @@ const GraphData = ({ graphdata }) => {
 		}
 	};
 
-	useEffect(async () => {
-		await retrieveGraphData();
+	useEffect(() => {
+		// setInterval(async () => {
+		// 	await retrieveGraphData();
+		// }, 10000);
+		retrieveGraphData();
 	}, [data]);
 
 	return (
-		<div className="flex flex-col w-auto mx-32 mt-32 shadow-xl">
+		<div className="flex flex-col w-1/2 mx-auto mt-32 shadow-xl">
 			<div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
 				<div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-					<div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-						<table className="min-w-full divide-y divide-gray-200">
+					<div className="shadow overflow-hidden h-1/2 border-b border-gray-200 sm:rounded-lg">
+						<table className="min-w-full divide-y divide-gray-200 h-10">
 							<thead className="bg-gray-50">
 								<tr>
 									<th
@@ -80,18 +88,18 @@ const GraphData = ({ graphdata }) => {
 										scope="col"
 										className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
 									>
-										Status
+										Price (ETH)
 									</th>
-									{/* <th
+									<th
 										scope="col"
 										className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
 									>
-										Role
-									</th> */}
+										Total Supply
+									</th>
 								</tr>
 							</thead>
 							<tbody className="bg-white divide-y divide-gray-200">
-								{console.log(data)}
+								{/* {console.log(data)} */}
 								{data.map((pair) => (
 									<tr key={pair.token1.symbol}>
 										<td className="px-2 py-4 whitespace-nowrap">
@@ -112,7 +120,14 @@ const GraphData = ({ graphdata }) => {
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
 											<span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-												Active
+												{(
+													Math.round(pair.token1.derivedETH * 1000000) / 1000000
+												).toString()}
+											</span>
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap">
+											<span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+												{Math.round(pair.txCount).toString()}
 											</span>
 										</td>
 									</tr>

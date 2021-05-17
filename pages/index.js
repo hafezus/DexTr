@@ -2,7 +2,7 @@ import Head from "next/head";
 import Layout, { siteTitle } from "../Components/layout";
 //import utilStyles from "../styles/utils.module.css";
 import Navbar from "../Components/navbar";
-import Wallet from "../Components/wallet/wallet";
+import Trade from "../Components/trade/trade";
 import Footer from "../Components/footer";
 import axios from "axios";
 
@@ -26,7 +26,7 @@ export default function Home() {
 				<title>{siteTitle}</title>
 			</Head>
 			<Navbar />
-			<Wallet />
+			<Trade />
 			<Footer />
 		</div>
 	);

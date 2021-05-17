@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { MdLoop } from "react-icons/md";
 import Web3 from "web3";
 import GraphData from "./graphdata";
+import { FaEthereum } from "react-icons/fa";
 
 const PlatformInfo = () => {
 	return (
@@ -55,35 +56,42 @@ const PlatformInfo = () => {
 	);
 };
 
-const Wallet = ({ graphdata }) => {
+const Trade = ({ graphdata }) => {
 	// const router = useRouter();
 	const [enabled, setEnabled] = useState(true);
-	const [connection, setConnection] = useState("Not Connected");
+	// const [connection, setConnection] = useState("Not Connected");
 	const [data, setData] = useState([]);
 
-	useEffect(() => {
-		//load all pending purchase events into list here from contract
-		let web3;
-		if (window.ethereum) {
-			web3 = new Web3(window.ethereum);
-		} else {
-			web3 = new Web3(window.web3.currentProvider);
-		}
-		console.log(web3.givenProvider);
-
-		web3.eth
-			.getAccounts()
-			.then((address) => {
-				document.querySelector("#connectionStatus").textContent =
-					address[0].slice(0, 10).toString() + "...";
-				setConnection(address[0].slice(0, 10).toString() + "...");
-			})
-			.catch(() => {
-				document.querySelector("#connectionStatus").textContent =
-					"Not Connected";
-				setConnection("Not Connected");
-			});
-	}, [connection]);
+	// useEffect(() => {
+	// 	//setConnection("...");
+	// 	//load all pending purchase events into list here from contract
+	// 	//let web3;
+	// 	console.log(web3.eth.getAccounts());
+	// 	if (window.ethereum) {
+	// 		web3 = new Web3(window.ethereum);
+	// 		web3.eth
+	// 			.getAccounts()
+	// 			.then((address) => {
+	// 				if (address !== null) {
+	// 					// document.querySelector("#connectionStatus").textContent =
+	// 					// 	address[0].slice(0, 10).toString() + "...";
+	// 					setConnection(address[0].slice(0, 10).toString() + "...");
+	// 					return;
+	// 				} else {
+	// 					setConnection("Not Connected");
+	// 					return;
+	// 				}
+	// 			})
+	// 			.catch(() => {
+	// 				document.querySelector("#connectionStatus").textContent =
+	// 					"Not Connected";
+	// 				setConnection("Not Connected");
+	// 			});
+	// 	} else {
+	// 		//web3 = new Web3(window.web3.currentProvider);
+	// 	}
+	// 	//console.log(web3.givenProvider);
+	// }, [connection]);
 	/*
 	State transitions here:
 	Profile pc, name, PK
@@ -100,30 +108,13 @@ const Wallet = ({ graphdata }) => {
 	const submitPurchase = (e) => {
 		//does nothing yet
 		e.preventDefault();
-		//console.log(graphdata);
-		// graphdata.then((uniswapgraph) => {
-		// 	console.log(uniswapgraph.data.data.pairs);
-		// 	setData(uniswapgraph.data.data.pairs);
-		// });
 		if (typeof window.ethereum !== "undefined") {
 			console.log("MetaMask is installed!");
 		}
 	};
 
-	const swapTokens = (e) => {
-		e.preventDefault();
-		let token1 = document.querySelector("#token1");
-		let token2 = document.querySelector("#token2");
-		let swapIcon = document.querySelector("#swapIcon");
-
-		if (token1.placeholder === "ETH") {
-			token1.placeholder = "DXT";
-			token2.placeholder = "ETH";
-		} else {
-			token1.placeholder = "ETH";
-			token2.placeholder = "DXT";
-		}
-		setEnabled(!enabled);
+	const calculateEth = () => {
+		console.log("here");
 	};
 
 	return (
@@ -132,29 +123,21 @@ const Wallet = ({ graphdata }) => {
 				className=" 
 				flex flex-col items-center
 			    mx-auto 
-				w-1/3 md:w-2/6 sm:w-3/5 sm:h-3/6 xl:w-1/4 xs:1/3 xl:h-auto
+				w-1/3 md:w-2/6 sm:w-3/5 sm:h-3/6 xl:w-1/5 xs:1/3 xl:h-auto
 				bg-gray-800 
 				rounded-xl shadow-2xl 
 				xl:md:sm:transition ease-in-out duration-500"
 			>
 				<form className="flex flex-col w-full">
-					<div className="text-white my-auto mx-2 my-2 font-mono flex flex-row items-stretch self-center bg-gray-800 w-1/2 rounded-b-md">
-						{/* <label className="text-white mx-auto font-mono text-sm flex">
-							Settings
-						</label> */}
-						{/* <div className="flex w-1/2 bg-gray-500"> */}
-						{/* <Connection /> */}
+					{/* <div className="text-white my-auto mx-2 my-2 font-mono flex flex-row items-stretch self-center bg-gray-800 w-1/2 rounded-b-md">
 						<span
 							className="w-full h-full mx-auto p-2 justify-center font-mono text-sm flex hover:bg-gray-900 border border-gray-700 rounded-b-md"
 							// onClick={copyAddress}
 							id="connectionStatus"
 						>
 							{connection}
-							{/* <FiSettings className="text-gray-200 hover:text-white hover:transition ease-in-out duration-300" /> */}
 						</span>
-
-						{/* </div> */}
-					</div>
+					</div> */}
 					<Switch
 						checked={enabled}
 						onChange={setEnabled}
@@ -176,53 +159,40 @@ const Wallet = ({ graphdata }) => {
 						</span>
 					</Switch>
 					<div className="flex flex-col">
-						{/* <div></div> */}
 						<input
 							type="number"
 							className="rounded-xl mx-auto mb-5 py-5 px-10 w-4/5 font-mono bg-gray-700 text-white text-xl focus:outline-none"
 							id="token1"
-							placeholder={enabled ? "ETH" : "DXT"}
+							onChange={calculateEth}
+							placeholder="0 DXT"
 						/>
-						<button className="focus:outline-none" onClick={swapTokens}>
-							{/* <IoIosArrowUp className="mx-auto mb-3 text-gray-500 focus:outline-none hover:text-white hover:transition ease-in-out duration-300" /> */}
-							{/* <MdLoop
-								className="mx-auto mb-3 text-gray-500 focus:outline-none hover:text-white hover:transition ease-in-out duration-300 transform rotate-90 hover:-rotate-90"
-								id="swapIcon"
-							/> */}
-						</button>
-						<input
-							type="number"
-							className="rounded-xl mx-auto py-5 px-10 w-4/5 font-mono bg-gray-700 text-white text-xl focus:outline-none"
-							placeholder={enabled ? "DXT" : "ETH"}
-							id="token2"
-							disabled
-						/>
+						<div className="flex rounded-xl mx-auto mb-5 w-4/5 font-mono bg-gray-800 text-gray-500 text-xl focus:outline-none justify-center">
+							ETH:{" "}
+							{enabled ? (
+								<FaEthereum className="animate-spin my-auto mx-2 h-6 text-gray-500" />
+							) : (
+								<span> X </span>
+							)}
+						</div>
 					</div>
 
-					{/* <div className="flex flex-row">
-						<input
-							type="number"
-							className="rounded-xl mx-auto mb-3 py-5 px-10 w-3/5 font-mono bg-gray-700 text-white text-xl focus:outline-none"
-							placeholder="DXT"
-						/>
-					</div> */}
 					{enabled ? (
 						<input
 							type="submit"
 							value="Buy"
 							className={`rounded-b-xl mx-auto w-full py-5 text-white 
-							hover:transition ease-in-out duration-600 bg-blue-600 hover:bg-blue-700 mt-20
+							hover:transition ease-in-out duration-600 bg-blue-600 hover:bg-blue-700
 						`}
 							onClick={submitPurchase}
 						/>
 					) : (
 						<>
-							<PendingTransactions connection={connection} />
+							{/* <PendingTransactions connection={connection} /> */}
 							<input
 								type="submit"
 								value="Sell"
 								className={`rounded-b-xl mx-auto w-full py-5 text-white 
-							hover:transition ease-in-out duration-600 bg-pink-400 hover:bg-pink-500 mt-20
+							hover:transition ease-in-out duration-600 bg-pink-400 hover:bg-pink-500
 							`}
 								onClick={submitPurchase}
 							/>
@@ -237,4 +207,4 @@ const Wallet = ({ graphdata }) => {
 	);
 };
 
-export default Wallet;
+export default Trade;

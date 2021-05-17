@@ -1,5 +1,5 @@
 import React from "react";
-import { FaEthereum, FaUserAlt } from "react-icons/fa";
+import { FaEthereum } from "react-icons/fa";
 import { GrStatusGoodSmall } from "react-icons/gr";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -7,6 +7,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Web3 from "web3";
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(" ");
@@ -14,11 +15,13 @@ function classNames(...classes) {
 
 function Connection() {
 	const [metaMask, setMetaMask] = useState(false);
+	const [connection, setConnection] = useState("Not Connected");
 
 	useEffect(async () => {
 		if (metaMask) {
 			document.querySelector("#connectedIcon").classList =
 				"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
+			//setMetaMask(false);
 		} else {
 			await ethereum.request({ method: "eth_requestAccounts" });
 			//setMetaMask(true);
@@ -27,78 +30,121 @@ function Connection() {
 		}
 	}, [metaMask]);
 
-	const connectMetaMask = async (e) => {
-		e.preventDefault();
+	useEffect(() => {
+		//console.log(web3.eth.getAccounts());
+		console.log(Web3.givenProvider.selectedAddress);
+		connectMetaMask();
+		// if (window.ethereum) {
+		// 	web3 = new Web3(window.ethereum);
+		// 	web3.eth
+		// 		.getAccounts()
+		// 		.then((address) => {
+		// 			setConnection(address[0].slice(0, 10).toString() + "...");
+		// 		})
+		// 		.catch(() => {
+		// 			document.querySelector("#connectionStatus").textContent =
+		// 				"Not Connected";
+		// 			setConnection("Not Connected");
+		// 		});
+		// } else {
+		// }
+	}, [connection]);
+
+	const connectMetaMask = async () => {
+		//e.preventDefault();
 		let connectButton = document.querySelector(".connectmetamask");
 		if (metaMask) {
-			console.log(e + " connected. Disconnecting");
+			console.log(" connected. Disconnecting");
 			//setMetaMask(false);
 			connectButton.disabled = false;
 			document.querySelector("#connectedIcon").classList =
 				"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
 		} else {
-			console.log(e + " not connected. Connecting...");
-			connectButton.disabled = true;
+			console.log(" not connected. Connecting...");
+			//connectButton.disabled = true;
 			await ethereum.request({ method: "eth_requestAccounts" });
 			//setMetaMask(true);
+			web3 = new Web3(window.ethereum);
+			// setConnection(address[0].slice(0, 10).toString() + "...");
+			console.log();
+			let address = await web3.eth
+				.getAccounts()
+				.then((address) => {
+					console.log(address[0].slice(0, 10) + "...");
+					return address[0].slice(0, 10) + "...";
+				})
+				.catch((error) => console.log(error));
+			setConnection(address);
+			web3.eth.getAccounts().then((address) => {});
 			document.querySelector("#connectedIcon").classList =
 				"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
 		}
 	};
 
 	return (
-		<Menu as="div" className="text-2xl align-middle my-auto px-2">
-			{({ open }) => (
-				<>
-					<Menu.Button
-						className="inline-flex justify-center w-full outline-none px-4 bg-gray-800 text-sm font-medium text-gray-700 
+		<>
+			<span
+				className="w-full h-full mx-auto p-2 justify-center font-mono text-sm flex hover:bg-gray-900 border border-gray-700 rounded-b-md"
+				// onClick={copyAddress}
+				id="connectionStatus"
+			>
+				{connection}
+			</span>
+			<Menu as="div" className="text-2xl align-middle my-auto px-2">
+				{({ open }) => (
+					<>
+						<Menu.Button
+							className="inline-flex justify-center w-full outline-none px-4 bg-gray-800 text-sm font-medium text-gray-700 
 						focus:outline-none focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-gray-800"
-					>
-						<GrStatusGoodSmall
-							className="-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-red-500"
-							id="connectedIcon"
-						/>
-						<ChevronDownIcon
-							className="-mr-1 ml-2 h-3 w-5 text-gray-300 hover:text-white transition duration-500 ease-in-out"
-							aria-hidden="true"
-						/>
-					</Menu.Button>
-
-					<Transition
-						show={open}
-						as={Fragment}
-						enter="transition ease-out duration-100"
-						enterFrom="transform opacity-0 scale-95"
-						enterTo="transform opacity-100 scale-100"
-						leave="transition ease-in duration-75"
-						leaveFrom="transform opacity-100 scale-100"
-						leaveTo="transform opacity-0 scale-95"
-					>
-						<Menu.Items
-							static
-							className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
 						>
-							<div className="py-1">
-								<Menu.Item>
-									{({ active }) => (
-										<a
-											href="/"
-											className={classNames(
-												active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-												"block px-4 py-2 text-sm connectmetamask"
-											)}
-											onClick={connectMetaMask}
-										>
-											Connect MetaMask
-										</a>
-									)}
-								</Menu.Item>
-							</div>
-						</Menu.Items>
-					</Transition>
-				</>
-			)}
-		</Menu>
+							<GrStatusGoodSmall
+								className="-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-red-500"
+								id="connectedIcon"
+							/>
+							<ChevronDownIcon
+								className="-mr-1 ml-2 h-3 w-5 text-gray-300 hover:text-white transition duration-500 ease-in-out"
+								aria-hidden="true"
+							/>
+						</Menu.Button>
+
+						<Transition
+							show={open}
+							as={Fragment}
+							enter="transition ease-out duration-100"
+							enterFrom="transform opacity-0 scale-95"
+							enterTo="transform opacity-100 scale-100"
+							leave="transition ease-in duration-75"
+							leaveFrom="transform opacity-100 scale-100"
+							leaveTo="transform opacity-0 scale-95"
+						>
+							<Menu.Items
+								static
+								className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+							>
+								<div className="py-1">
+									<Menu.Item>
+										{({ active }) => (
+											<a
+												href="/"
+												className={classNames(
+													active
+														? "bg-gray-100 text-gray-900"
+														: "text-gray-700",
+													"block px-4 py-2 text-sm connectmetamask"
+												)}
+												onClick={connectMetaMask}
+											>
+												Connect MetaMask
+											</a>
+										)}
+									</Menu.Item>
+								</div>
+							</Menu.Items>
+						</Transition>
+					</>
+				)}
+			</Menu>
+		</>
 	);
 }
 

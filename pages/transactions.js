@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../Components/navbar";
 import Footer from "../Components/footer";
-import Wallet from "../Components/transactions/wallet";
+// import Wallet from "../Components/transactions/wallet";
 import Head from "next/head";
 
 import Layout, { siteTitle } from "../Components/layout";
