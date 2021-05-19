@@ -15,8 +15,6 @@ let eventsList = [];
 
 const initializeWeb3 = async () => {
 	if (window.ethereum) {
-		// web3js = new Web3("http://127.0.0.1:8545");
-		//web3js = new Web3(web3.currentProvider);
 		await ethereum.request({ method: "eth_requestAccounts" });
 		web3js = new Web3(window.ethereum);
 		console.log(web3.currentProvider);
@@ -44,15 +42,6 @@ const initializeContracts = async () => {
 				from: accounts[0],
 			});
 
-		// await tradeContract.events
-		// 	.allEvents({ fromBlock: "earliest" }, (error, event) => {
-		// 		events.push(event);
-		// 	})
-		// 	.on("connected", (id) => console.log(id))
-		// 	.on("data", (event) => events.push(event))
-		// 	.on("changed", (event) => console.log(event))
-		// 	.on("error", (error) => console.log(error));
-
 		await tradeContract
 			.getPastEvents(
 				"NewPurchase",
@@ -61,14 +50,10 @@ const initializeContracts = async () => {
 					fromBlock: 0,
 					toBlock: "latest",
 				},
-				function (error, events) {
-					//console.log("Purchase: ", events);
-					//eventsList = eventsList.concat(events);
-				}
+				function (error, events) {}
 			)
 			.then(function (events) {
-				//console.log(events); // same results as the optional callback above
-				eventsList = eventsList.concat(events);
+				eventsList = eventsList.concat(events); // same results as the optional callback above
 			});
 		await tradeContract
 			.getPastEvents(
@@ -78,10 +63,7 @@ const initializeContracts = async () => {
 					fromBlock: 0,
 					toBlock: "latest",
 				},
-				async function (error, events) {
-					//console.log("Sale:", events);
-					//eventsList = eventsList.concat(await events);
-				}
+				async function (error, events) {}
 			)
 			.then(function (events) {
 				//console.log(events); // same results as the optional callback above
@@ -89,15 +71,6 @@ const initializeContracts = async () => {
 			});
 
 		console.log(eventsList);
-
-		// await tradeContract.events
-		// 	.NewSale({ fromBlock: "earliest" }, (error, event) => {
-		// 		events.push(event);
-		// 	})
-		// 	.on("connected", (id) => console.log(id))
-		// 	.on("data", (event) => events.push(event))
-		// 	.on("changed", (event) => console.log(event))
-		// 	.on("error", (error) => console.log(error));
 
 		return {
 			tradeContract,

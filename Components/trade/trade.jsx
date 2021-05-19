@@ -63,6 +63,7 @@ const Trade = () => {
 		const account = await contracts.accounts[0];
 		setAccount(account);
 		console.log(contracts.tradeContract._address);
+		console.log(account);
 
 		const balance = await contracts.tradeContract.methods
 			.balanceOf(account)
@@ -72,20 +73,8 @@ const Trade = () => {
 
 		setBalance(balance);
 		console.log(balance);
-		// console.log(
-		// 	"account 1: " +
-		// 		(await web3js.eth.getBalance(
-		// 			"0x34d5F8c13E6B106f3fcbA178b444627f3b6a7E6d"
-		// 		))
-		// );
-		// console.log(
-		// 	"account 2: " +
-		// 		(await web3js.eth.getBalance(
-		// 			"0x99B4f43De9a01805fAc36b28A19DA015fBf833e3"
-		// 		))
-		// );
-		setData(contracts.eventsList);
-		console.log(data);
+		//setData(contracts.eventsList);
+		//console.log(data);
 		return;
 	}, []);
 
@@ -99,7 +88,7 @@ const Trade = () => {
 			.call({ from: account })
 			.then("data", (data) => data)
 			.then("error", (error) => error);
-		//console.log(currentAmount);
+		console.log(currentAmount);
 		await contracts.tradeContract.methods
 			.buyDxt(account, amount) //web3.utils.toWei(amount, "ether")
 			.send({

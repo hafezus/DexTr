@@ -19,24 +19,26 @@ function Connection() {
 
 	useEffect(async () => {
 		// setConnection("Not Connected");
+		let address = "";
 		web3 = new Web3(window.ethereum);
 		if (connection !== "Not Connected") {
 			document.querySelector("#connectedIcon").classList =
-				"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
+				"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
+			address === "" ? setConnection("Not Connected") : setConnection(address);
 		} else {
-			let address = await web3.eth
+			address = await web3.eth
 				.getAccounts()
 				.then((address) => {
 					console.log(address[0].slice(0, 10) + "...");
 					return address[0].slice(0, 10) + "...";
 				})
 				.catch((error) => console.log(error));
-			address == "" ? setConnection("Not Connected") : setConnection(address);
+			address === "" ? setConnection("Not Connected") : setConnection(address);
 			// web3.eth.getAccounts().then((address) => {});
 			// document.querySelector("#connectedIcon").classList =
 			// 	"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
 		}
-	}, [connection]);
+	}, []);
 
 	const connectMetaMask = async (event) => {
 		event.preventDefault();
