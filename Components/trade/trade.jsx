@@ -12,6 +12,7 @@ import { MdLoop } from "react-icons/md";
 import Web3 from "web3";
 import GraphData from "./graphdata";
 import { FaEthereum } from "react-icons/fa";
+import { initializeWeb3, initializeContracts } from "../../web3.js";
 
 const PlatformInfo = () => {
 	return (
@@ -60,50 +61,101 @@ const Trade = ({ graphdata }) => {
 	// const router = useRouter();
 	const [enabled, setEnabled] = useState(true);
 	// const [connection, setConnection] = useState("Not Connected");
-	const [data, setData] = useState([]);
+	const [data, setData] = useState(0);
+	const [web3, setWeb3] = useState(undefined);
+	const [account, setAccount] = useState(undefined);
+	const [balance, setBalance] = useState(undefined);
+	const [contracts, setContracts] = useState(undefined);
 
-	// useEffect(() => {
-	// 	//setConnection("...");
-	// 	//load all pending purchase events into list here from contract
-	// 	//let web3;
-	// 	console.log(web3.eth.getAccounts());
-	// 	if (window.ethereum) {
-	// 		web3 = new Web3(window.ethereum);
-	// 		web3.eth
-	// 			.getAccounts()
-	// 			.then((address) => {
-	// 				if (address !== null) {
-	// 					// document.querySelector("#connectionStatus").textContent =
-	// 					// 	address[0].slice(0, 10).toString() + "...";
-	// 					setConnection(address[0].slice(0, 10).toString() + "...");
-	// 					return;
-	// 				} else {
-	// 					setConnection("Not Connected");
-	// 					return;
-	// 				}
-	// 			})
-	// 			.catch(() => {
-	// 				document.querySelector("#connectionStatus").textContent =
-	// 					"Not Connected";
-	// 				setConnection("Not Connected");
-	// 			});
-	// 	} else {
-	// 		//web3 = new Web3(window.web3.currentProvider);
-	// 	}
-	// 	//console.log(web3.givenProvider);
-	// }, [connection]);
-	/*
-	State transitions here:
-	Profile pc, name, PK
-	Total Ether, equivalent AED amount
-	*/
-	// let WalletBody = () => {
-	// 	return router.pathname == "/" ? (
-	// 		<WalletPortfolio />
-	// 	) : (
-	// 		<WalletTransactions />
-	// 	);
-	// };
+	useEffect(async () => {
+		//let tradeContract = await initializeWeb3();
+		const web3js = await initializeWeb3();
+		setWeb3(web3js);
+		const contracts = await initializeContracts();
+		setContracts(contracts);
+		const account = await contracts.accounts[0];
+		setAccount(account);
+		console.log(contracts.tradeContract._address);
+
+		const balance = await contracts.tradeContract.methods
+			.balanceOf(account)
+			.call({
+				from: account,
+			});
+
+		setBalance(balance);
+		console.log(
+			"account 1: " +
+				(await web3js.eth.getBalance(
+					"0x34d5F8c13E6B106f3fcbA178b444627f3b6a7E6d"
+				))
+		);
+		console.log(
+			"account 2: " +
+				(await web3js.eth.getBalance(
+					"0x99B4f43De9a01805fAc36b28A19DA015fBf833e3"
+				))
+		);
+	}, []);
+
+	const purchaseDxt = async (event) => {
+		event.preventDefault();
+		const amount = document.querySelector("#token1").value;
+		console.log(account);
+		console.log(amount);
+		let currentAmount = await contracts.tradeHelperContract.methods
+			._convertToEth(amount)
+			.call({ from: account })
+			.then("data", (data) => data)
+			.then("error", (error) => error);
+		console.log(currentAmount);
+		await contracts.tradeContract.methods
+			.buyDxt(account, amount) //web3.utils.toWei(amount, "ether")
+			.send({
+				from: account,
+				gasLimit: 300000 + Number.parseInt(currentAmount),
+				gasPrice: web3.utils.toWei("1", "gwei"),
+				value: currentAmount,
+			})
+			.on("receipt", (receipt) => {
+				console.log(
+					`Successfully bought ${amount} DXT for ${currentAmount} WEI`
+				);
+			})
+			.on("error", (error) => {
+				console.log("Failed to transact");
+				return;
+			});
+	};
+	const sellDxt = async (event) => {
+		event.preventDefault();
+		console.log("sell dxt");
+		const amount = document.querySelector("#token1").value;
+		let currentAmount = await contracts.tradeHelperContract.methods
+			._convertToEth(amount)
+			.call({ from: account })
+			.then("data", (data) => data)
+			.then("error", (error) => error);
+		console.log(currentAmount);
+		await contracts.tradeContract.methods
+			.sellDxt(account, amount)
+			.send({
+				from: account,
+				gasLimit: 300000 + Number.parseInt(currentAmount),
+				gasPrice: web3.utils.toWei("1", "gwei"),
+			})
+			.on("receipt", (receipt) => {
+				console.log(`Successfully sold ${amount} DXT for ${currentAmount} WEI`);
+			})
+			.on("error", (error) => {
+				console.log("Failed to transact");
+				return;
+			});
+
+		//change from: attribute value to address of contract
+		//from: '0x86FC74fc04bF37CD52e4688EE58DC3C791123D09'
+		//Address of contract
+	};
 
 	const submitPurchase = (e) => {
 		//does nothing yet
@@ -113,8 +165,20 @@ const Trade = ({ graphdata }) => {
 		}
 	};
 
-	const calculateEth = () => {
-		console.log("here");
+	const calculateEth = async (e) => {
+		//let balance = await web3.eth.getBalance(account).then((balance) => balance);
+		try {
+			let currentAmount = await contracts.tradeHelperContract.methods
+				._convertToEth(e.target.value)
+				.call({ from: account })
+				.then("data", (data) => data)
+				.then("error", (error) => error);
+			setData(currentAmount);
+			return Number.parseFloat(currentAmount);
+		} catch (e) {
+			setData(0);
+			console.log("Error");
+		}
 	};
 
 	return (
@@ -129,15 +193,6 @@ const Trade = ({ graphdata }) => {
 				xl:md:sm:transition ease-in-out duration-500"
 			>
 				<form className="flex flex-col w-full">
-					{/* <div className="text-white my-auto mx-2 my-2 font-mono flex flex-row items-stretch self-center bg-gray-800 w-1/2 rounded-b-md">
-						<span
-							className="w-full h-full mx-auto p-2 justify-center font-mono text-sm flex hover:bg-gray-900 border border-gray-700 rounded-b-md"
-							// onClick={copyAddress}
-							id="connectionStatus"
-						>
-							{connection}
-						</span>
-					</div> */}
 					<Switch
 						checked={enabled}
 						onChange={setEnabled}
@@ -165,13 +220,17 @@ const Trade = ({ graphdata }) => {
 							id="token1"
 							onChange={calculateEth}
 							placeholder="0 DXT"
+							required
 						/>
 						<div className="flex rounded-xl mx-auto mb-5 w-4/5 font-mono bg-gray-800 text-gray-500 text-xl focus:outline-none justify-center">
-							ETH:{" "}
-							{enabled ? (
+							WEI: {console.log(data)}
+							{data === 0 ? (
 								<FaEthereum className="animate-spin my-auto mx-2 h-6 text-gray-500" />
 							) : (
-								<span> X </span>
+								<span className="not-sr-only text-gray-500">
+									{"   "}
+									{Number.parseFloat(data)}
+								</span>
 							)}
 						</div>
 					</div>
@@ -183,23 +242,21 @@ const Trade = ({ graphdata }) => {
 							className={`rounded-b-xl mx-auto w-full py-5 text-white 
 							hover:transition ease-in-out duration-600 bg-blue-600 hover:bg-blue-700
 						`}
-							onClick={submitPurchase}
+							onClick={purchaseDxt}
 						/>
 					) : (
 						<>
-							{/* <PendingTransactions connection={connection} /> */}
 							<input
 								type="submit"
 								value="Sell"
 								className={`rounded-b-xl mx-auto w-full py-5 text-white 
 							hover:transition ease-in-out duration-600 bg-pink-400 hover:bg-pink-500
 							`}
-								onClick={submitPurchase}
+								onClick={sellDxt}
 							/>
 						</>
 					)}
 				</form>
-				{/* </div> */}
 			</section>
 			<GraphData graphdata={data} />
 			<PlatformInfo />

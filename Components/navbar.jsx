@@ -17,56 +17,21 @@ function Connection() {
 	const [metaMask, setMetaMask] = useState(false);
 	const [connection, setConnection] = useState("Not Connected");
 
-	useEffect(async () => {
-		if (metaMask) {
-			document.querySelector("#connectedIcon").classList =
-				"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
-			//setMetaMask(false);
-		} else {
-			await ethereum.request({ method: "eth_requestAccounts" });
-			//setMetaMask(true);
-			document.querySelector("#connectedIcon").classList =
-				"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
-		}
-	}, [metaMask]);
+	useEffect(() => {}, [connection]);
 
-	useEffect(() => {
-		//console.log(web3.eth.getAccounts());
-		console.log(Web3.givenProvider.selectedAddress);
-		connectMetaMask();
-		// if (window.ethereum) {
-		// 	web3 = new Web3(window.ethereum);
-		// 	web3.eth
-		// 		.getAccounts()
-		// 		.then((address) => {
-		// 			setConnection(address[0].slice(0, 10).toString() + "...");
-		// 		})
-		// 		.catch(() => {
-		// 			document.querySelector("#connectionStatus").textContent =
-		// 				"Not Connected";
-		// 			setConnection("Not Connected");
-		// 		});
-		// } else {
-		// }
-	}, [connection]);
-
-	const connectMetaMask = async () => {
-		//e.preventDefault();
+	const connectMetaMask = async (event) => {
+		event.preventDefault();
 		let connectButton = document.querySelector(".connectmetamask");
-		if (metaMask) {
-			console.log(" connected. Disconnecting");
-			//setMetaMask(false);
-			connectButton.disabled = false;
-			document.querySelector("#connectedIcon").classList =
-				"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
+		if (connection !== "Not Connected") {
+			// console.log(" connected. Disconnecting");
+			// //setMetaMask(false);
+			// connectButton.disabled = false;
+			// document.querySelector("#connectedIcon").classList =
+			// 	"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
 		} else {
 			console.log(" not connected. Connecting...");
-			//connectButton.disabled = true;
 			await ethereum.request({ method: "eth_requestAccounts" });
-			//setMetaMask(true);
 			web3 = new Web3(window.ethereum);
-			// setConnection(address[0].slice(0, 10).toString() + "...");
-			console.log();
 			let address = await web3.eth
 				.getAccounts()
 				.then((address) => {
