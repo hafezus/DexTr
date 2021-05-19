@@ -19,10 +19,10 @@
  */
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-// const infuraKey = "fj4jll3k.....";
+const infuraKey = process.env.infuraKey;
 //
 // const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
+const mnemonic = process.env.mnemonic;
 
 module.exports = {
 	/**
@@ -69,8 +69,8 @@ module.exports = {
 		kovan: {
 			provider: () =>
 				new HDWalletProvider(
-					`device surge lunar radar uniform dove pond ranch assist sugar grit jealous`,
-					`https://kovan.infura.io/v3/19f8664e78aa4441a3ca849359613a8c`
+					`${mnemonic}`,
+					`https://kovan.infura.io/v3/${infuraKey}`
 				),
 			network_id: 42, // Kovan's id
 			gas: 5500000, // Kovan has a lower block limit than mainnet
