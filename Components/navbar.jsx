@@ -17,7 +17,26 @@ function Connection() {
 	const [metaMask, setMetaMask] = useState(false);
 	const [connection, setConnection] = useState("Not Connected");
 
-	useEffect(() => {}, [connection]);
+	useEffect(async () => {
+		// setConnection("Not Connected");
+		web3 = new Web3(window.ethereum);
+		if (connection !== "Not Connected") {
+			document.querySelector("#connectedIcon").classList =
+				"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
+		} else {
+			let address = await web3.eth
+				.getAccounts()
+				.then((address) => {
+					console.log(address[0].slice(0, 10) + "...");
+					return address[0].slice(0, 10) + "...";
+				})
+				.catch((error) => console.log(error));
+			address == "" ? setConnection("Not Connected") : setConnection(address);
+			// web3.eth.getAccounts().then((address) => {});
+			// document.querySelector("#connectedIcon").classList =
+			// 	"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
+		}
+	}, [connection]);
 
 	const connectMetaMask = async (event) => {
 		event.preventDefault();
@@ -26,8 +45,9 @@ function Connection() {
 			// console.log(" connected. Disconnecting");
 			// //setMetaMask(false);
 			// connectButton.disabled = false;
-			// document.querySelector("#connectedIcon").classList =
-			// 	"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
+			document.querySelector("#connectedIcon").classList =
+				"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
+			setConnection("Not Connected");
 		} else {
 			console.log(" not connected. Connecting...");
 			await ethereum.request({ method: "eth_requestAccounts" });
@@ -40,7 +60,7 @@ function Connection() {
 				})
 				.catch((error) => console.log(error));
 			setConnection(address);
-			web3.eth.getAccounts().then((address) => {});
+			// web3.eth.getAccounts().then((address) => {});
 			document.querySelector("#connectedIcon").classList =
 				"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
 		}
@@ -49,9 +69,12 @@ function Connection() {
 	return (
 		<>
 			<span
-				className="w-full h-full mx-auto p-2 justify-center font-mono text-sm flex hover:bg-gray-900 border border-gray-700 rounded-b-md"
+				className="w-auto h-auto p-2 justify-center font-mono text-sm flex hover:bg-gray-900 border border-gray-700 rounded-md"
 				// onClick={copyAddress}
 				id="connectionStatus"
+				onClick={() => {
+					document.execCommand("copy");
+				}}
 			>
 				{connection}
 			</span>

@@ -1,10 +1,6 @@
 import React from "react";
-// import WalletDetails from "./walletDetails";
-// import WalletPortfolio from "./walletPortfolio";
-// import WalletTransactions from "../transactions/walletTransactions";
-// import WalletProfile from "./walletProfile";
 import { useRouter } from "next/router";
-import PendingTransactions from "../transactions/pendingTransactions";
+// import PendingTransactions from "../transactions/pendingTransactions";
 import { Switch } from "@headlessui/react";
 import { useState, useEffect } from "react";
 // import { FiSettings } from "react-icons/fi";
@@ -13,6 +9,7 @@ import Web3 from "web3";
 import GraphData from "./graphdata";
 import { FaEthereum } from "react-icons/fa";
 import { initializeWeb3, initializeContracts } from "../../web3.js";
+import WalletTransactions from "../transactions/walletTransactions";
 
 const PlatformInfo = () => {
 	return (
@@ -24,48 +21,38 @@ const PlatformInfo = () => {
 			</div>
 			<div className="flex flex-wrap justify-center">
 				<div className="rounded-lg bg-transparent w-96 p-20">
-					{/* Next.js icon */}
 					<img src="/images/nextjs-3.svg" alt="next" />
-					{/* <span></span> */}
 				</div>
 				<div className="rounded-lg bg-transparent w-96 p-20">
-					{/* Next.js icon */}
-
 					<img src="/images/tailwindcss.svg" alt="tailwind" />
-					{/* <span></span> */}
 				</div>
 				<div className="rounded-lg bg-transparent w-96 p-20">
-					{/* Next.js icon */}
 					<img
 						src="/images/solidity.svg"
 						alt="solidity"
 						className="w-1/2 mx-auto"
 					/>
-					{/* <span>Solidity</span> */}
 				</div>
 				<div className="rounded-lg bg-transparent w-96 p-20">
-					{/* Next.js icon */}
 					<img
 						src="/images/the-graph.svg"
 						alt="thegraph"
 						className="w-2/3 mx-auto"
 					/>
-					{/* <span>Solidity</span> */}
 				</div>
 			</div>
 		</div>
 	);
 };
 
-const Trade = ({ graphdata }) => {
-	// const router = useRouter();
+const Trade = () => {
 	const [enabled, setEnabled] = useState(true);
-	// const [connection, setConnection] = useState("Not Connected");
-	const [data, setData] = useState(0);
+	const [amount, setAmount] = useState(0);
 	const [web3, setWeb3] = useState(undefined);
 	const [account, setAccount] = useState(undefined);
-	const [balance, setBalance] = useState(undefined);
+	const [balance, setBalance] = useState(0);
 	const [contracts, setContracts] = useState(undefined);
+	const [data, setData] = useState([]);
 
 	useEffect(async () => {
 		//let tradeContract = await initializeWeb3();
@@ -84,38 +71,42 @@ const Trade = ({ graphdata }) => {
 			});
 
 		setBalance(balance);
-		console.log(
-			"account 1: " +
-				(await web3js.eth.getBalance(
-					"0x34d5F8c13E6B106f3fcbA178b444627f3b6a7E6d"
-				))
-		);
-		console.log(
-			"account 2: " +
-				(await web3js.eth.getBalance(
-					"0x99B4f43De9a01805fAc36b28A19DA015fBf833e3"
-				))
-		);
+		console.log(balance);
+		// console.log(
+		// 	"account 1: " +
+		// 		(await web3js.eth.getBalance(
+		// 			"0x34d5F8c13E6B106f3fcbA178b444627f3b6a7E6d"
+		// 		))
+		// );
+		// console.log(
+		// 	"account 2: " +
+		// 		(await web3js.eth.getBalance(
+		// 			"0x99B4f43De9a01805fAc36b28A19DA015fBf833e3"
+		// 		))
+		// );
+		setData(contracts.eventsList);
+		console.log(data);
+		return;
 	}, []);
 
 	const purchaseDxt = async (event) => {
 		event.preventDefault();
 		const amount = document.querySelector("#token1").value;
-		console.log(account);
-		console.log(amount);
+		//console.log(account);
+		//console.log(amount);
 		let currentAmount = await contracts.tradeHelperContract.methods
 			._convertToEth(amount)
 			.call({ from: account })
 			.then("data", (data) => data)
 			.then("error", (error) => error);
-		console.log(currentAmount);
+		//console.log(currentAmount);
 		await contracts.tradeContract.methods
 			.buyDxt(account, amount) //web3.utils.toWei(amount, "ether")
 			.send({
 				from: account,
-				gasLimit: 300000 + Number.parseInt(currentAmount),
+				gasLimit: 300000,
 				gasPrice: web3.utils.toWei("1", "gwei"),
-				value: currentAmount,
+				value: Number.parseInt(currentAmount),
 			})
 			.on("receipt", (receipt) => {
 				console.log(
@@ -126,17 +117,19 @@ const Trade = ({ graphdata }) => {
 				console.log("Failed to transact");
 				return;
 			});
+
+		//currentAmount
 	};
 	const sellDxt = async (event) => {
 		event.preventDefault();
-		console.log("sell dxt");
+		//console.log("sell dxt");
 		const amount = document.querySelector("#token1").value;
 		let currentAmount = await contracts.tradeHelperContract.methods
 			._convertToEth(amount)
 			.call({ from: account })
 			.then("data", (data) => data)
 			.then("error", (error) => error);
-		console.log(currentAmount);
+		console.log(contracts.tradeContract._address);
 		await contracts.tradeContract.methods
 			.sellDxt(account, amount)
 			.send({
@@ -157,14 +150,6 @@ const Trade = ({ graphdata }) => {
 		//Address of contract
 	};
 
-	const submitPurchase = (e) => {
-		//does nothing yet
-		e.preventDefault();
-		if (typeof window.ethereum !== "undefined") {
-			console.log("MetaMask is installed!");
-		}
-	};
-
 	const calculateEth = async (e) => {
 		//let balance = await web3.eth.getBalance(account).then((balance) => balance);
 		try {
@@ -173,10 +158,10 @@ const Trade = ({ graphdata }) => {
 				.call({ from: account })
 				.then("data", (data) => data)
 				.then("error", (error) => error);
-			setData(currentAmount);
+			setAmount(currentAmount);
 			return Number.parseFloat(currentAmount);
 		} catch (e) {
-			setData(0);
+			setAmount(0);
 			console.log("Error");
 		}
 	};
@@ -223,13 +208,13 @@ const Trade = ({ graphdata }) => {
 							required
 						/>
 						<div className="flex rounded-xl mx-auto mb-5 w-4/5 font-mono bg-gray-800 text-gray-500 text-xl focus:outline-none justify-center">
-							WEI: {console.log(data)}
-							{data === 0 ? (
+							WEI:
+							{amount === 0 ? (
 								<FaEthereum className="animate-spin my-auto mx-2 h-6 text-gray-500" />
 							) : (
 								<span className="not-sr-only text-gray-500">
 									{"   "}
-									{Number.parseFloat(data)}
+									{Number.parseFloat(amount)}
 								</span>
 							)}
 						</div>
@@ -258,7 +243,8 @@ const Trade = ({ graphdata }) => {
 					)}
 				</form>
 			</section>
-			<GraphData graphdata={data} />
+			<GraphData />
+			{/* <WalletTransactions data={data} /> */}
 			<PlatformInfo />
 		</div>
 	);

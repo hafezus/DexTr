@@ -9,6 +9,7 @@ let tradeContract;
 let tradeHelperContract;
 let accounts;
 let contractBalance;
+let eventsList = [];
 // let network;
 // let events = [];
 
@@ -37,15 +38,74 @@ const initializeContracts = async () => {
 			"0xca4663F49a439b617955101Bfd440cCC13E1bF4A"
 		);
 		accounts = await web3js.eth.getAccounts();
-		// const balanceContract = await tradeContract.methods
-		// 	.balanceOf("0x86FC74fc04bF37CD52e4688EE58DC3C791123D09")
-		// 	.call({ from: accounts[0] });
 		contractBalance = await tradeContract.methods
 			.balanceOf("0xE8Cdc28717eAE90F34197d662E36404C7cd70709")
 			.call({
 				from: accounts[0],
 			});
-		return { tradeContract, tradeHelperContract, accounts, contractBalance };
+
+		// await tradeContract.events
+		// 	.allEvents({ fromBlock: "earliest" }, (error, event) => {
+		// 		events.push(event);
+		// 	})
+		// 	.on("connected", (id) => console.log(id))
+		// 	.on("data", (event) => events.push(event))
+		// 	.on("changed", (event) => console.log(event))
+		// 	.on("error", (error) => console.log(error));
+
+		await tradeContract
+			.getPastEvents(
+				"NewPurchase",
+				{
+					filter: {}, // Using an array means OR: e.g. 20 or 23
+					fromBlock: 0,
+					toBlock: "latest",
+				},
+				function (error, events) {
+					//console.log("Purchase: ", events);
+					//eventsList = eventsList.concat(events);
+				}
+			)
+			.then(function (events) {
+				//console.log(events); // same results as the optional callback above
+				eventsList = eventsList.concat(events);
+			});
+		await tradeContract
+			.getPastEvents(
+				"NewSale",
+				{
+					filter: {}, // Using an array means OR: e.g. 20 or 23
+					fromBlock: 0,
+					toBlock: "latest",
+				},
+				async function (error, events) {
+					//console.log("Sale:", events);
+					//eventsList = eventsList.concat(await events);
+				}
+			)
+			.then(function (events) {
+				//console.log(events); // same results as the optional callback above
+				eventsList = eventsList.concat(events);
+			});
+
+		console.log(eventsList);
+
+		// await tradeContract.events
+		// 	.NewSale({ fromBlock: "earliest" }, (error, event) => {
+		// 		events.push(event);
+		// 	})
+		// 	.on("connected", (id) => console.log(id))
+		// 	.on("data", (event) => events.push(event))
+		// 	.on("changed", (event) => console.log(event))
+		// 	.on("error", (error) => console.log(error));
+
+		return {
+			tradeContract,
+			tradeHelperContract,
+			accounts,
+			contractBalance,
+			eventsList,
+		};
 	} else {
 		return undefined;
 	}
