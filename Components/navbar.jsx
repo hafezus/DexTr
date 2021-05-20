@@ -27,6 +27,7 @@ function Connection() {
 		// 	// document.querySelector("#connectedIcon").classList =
 		// 	// 	"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
 		// }
+		let web3 = new Web3(window.ethereum);
 
 		web3.eth
 			.getAccounts()
