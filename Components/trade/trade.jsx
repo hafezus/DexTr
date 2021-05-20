@@ -1,15 +1,10 @@
 import React from "react";
-import { useRouter } from "next/router";
-// import PendingTransactions from "../transactions/pendingTransactions";
 import { Switch } from "@headlessui/react";
 import { useState, useEffect } from "react";
-// import { FiSettings } from "react-icons/fi";
-import { MdLoop } from "react-icons/md";
 import Web3 from "web3";
 import GraphData from "./graphdata";
 import { FaEthereum } from "react-icons/fa";
 import { initializeWeb3, initializeContracts } from "../../web3.js";
-import WalletTransactions from "../transactions/walletTransactions";
 
 const PlatformInfo = () => {
 	return (
@@ -52,10 +47,9 @@ const Trade = () => {
 	const [account, setAccount] = useState(undefined);
 	const [balance, setBalance] = useState(0);
 	const [contracts, setContracts] = useState(undefined);
-	const [data, setData] = useState([]);
 
 	useEffect(async () => {
-		//let tradeContract = await initializeWeb3();
+		//on page load initialize web3 and setup contracts, current user account, etc.
 		const web3js = await initializeWeb3();
 		setWeb3(web3js);
 		const contracts = await initializeContracts();
@@ -73,24 +67,21 @@ const Trade = () => {
 
 		setBalance(balance);
 		console.log(balance);
-		//setData(contracts.eventsList);
-		//console.log(data);
 		return;
 	}, []);
 
 	const purchaseDxt = async (event) => {
+		//onClick purchase button
 		event.preventDefault();
 		const amount = document.querySelector("#token1").value;
-		//console.log(account);
-		//console.log(amount);
 		let currentAmount = await contracts.tradeHelperContract.methods
 			._convertToEth(amount)
 			.call({ from: account })
 			.then("data", (data) => data)
-			.then("error", (error) => error);
+			.then("error", (error) => error); //Calculate inputted Eth based on conversion rate in the TradeHelper contract
 		console.log(currentAmount);
 		await contracts.tradeContract.methods
-			.buyDxt(account, amount) //web3.utils.toWei(amount, "ether")
+			.buyDxt(account, amount)
 			.send({
 				from: account,
 				gasLimit: 300000,
@@ -98,27 +89,28 @@ const Trade = () => {
 				value: Number.parseInt(currentAmount),
 			})
 			.on("receipt", (receipt) => {
+				//On successful transaction
 				console.log(
 					`Successfully bought ${amount} DXT for ${currentAmount} WEI`
 				);
 			})
 			.on("error", (error) => {
+				//On transaction revert
 				console.log("Failed to transact");
 				return;
 			});
 
-		//currentAmount
+		//console.log(currentAmount)
 	};
 	const sellDxt = async (event) => {
 		event.preventDefault();
-		//console.log("sell dxt");
 		const amount = document.querySelector("#token1").value;
 		let currentAmount = await contracts.tradeHelperContract.methods
 			._convertToEth(amount)
 			.call({ from: account })
 			.then("data", (data) => data)
-			.then("error", (error) => error);
-		console.log(contracts.tradeContract._address);
+			.then("error", (error) => error); //Calculate inputted Eth based on conversion rate in the TradeHelper contract
+		// console.log(contracts.tradeContract._address);
 		await contracts.tradeContract.methods
 			.sellDxt(account, amount)
 			.send({
@@ -127,16 +119,14 @@ const Trade = () => {
 				gasPrice: web3.utils.toWei("1", "gwei"),
 			})
 			.on("receipt", (receipt) => {
+				//On successful transaction
 				console.log(`Successfully sold ${amount} DXT for ${currentAmount} WEI`);
 			})
 			.on("error", (error) => {
+				//On transaction revert
 				console.log("Failed to transact");
 				return;
 			});
-
-		//change from: attribute value to address of contract
-		//from: '0x86FC74fc04bF37CD52e4688EE58DC3C791123D09'
-		//Address of contract
 	};
 
 	const calculateEth = async (e) => {
@@ -233,7 +223,6 @@ const Trade = () => {
 				</form>
 			</section>
 			<GraphData />
-			{/* <WalletTransactions data={data} /> */}
 			<PlatformInfo />
 		</div>
 	);

@@ -17,54 +17,53 @@ function Connection() {
 	const [metaMask, setMetaMask] = useState(false);
 	const [connection, setConnection] = useState("Not Connected");
 
-	useEffect(async () => {
-		// setConnection("Not Connected");
-		let address = "";
-		web3 = new Web3(window.ethereum);
-		if (connection !== "Not Connected") {
-			document.querySelector("#connectedIcon").classList =
-				"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
-			address === "" ? setConnection("Not Connected") : setConnection(address);
-		} else {
-			address = await web3.eth
-				.getAccounts()
-				.then((address) => {
-					console.log(address[0].slice(0, 10) + "...");
-					return address[0].slice(0, 10) + "...";
-				})
-				.catch((error) => console.log(error));
-			address === "" ? setConnection("Not Connected") : setConnection(address);
-			// web3.eth.getAccounts().then((address) => {});
-			// document.querySelector("#connectedIcon").classList =
-			// 	"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
-		}
+	useEffect(() => {
+		//Update connection status on navbar
+		// if (window.ethereum) {
+		// 	web3 = new Web3(window.ethereum);
+		// 	// document.querySelector("#connectedIcon").classList =
+		// 	// 	"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
+		// } else {
+		// 	// document.querySelector("#connectedIcon").classList =
+		// 	// 	"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
+		// }
+
+		web3.eth
+			.getAccounts()
+			.then(async (account) => {
+				setConnection(account[0].slice(0, 10) + "...");
+				document.querySelector("#connectedIcon").classList =
+					"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
+				return;
+			})
+			.catch(async (error) => {
+				setConnection("Not Connected");
+				document.querySelector("#connectedIcon").classList =
+					"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
+				return;
+			});
 	}, []);
 
 	const connectMetaMask = async (event) => {
+		//Update connection status manually via dropdown in navbar
 		event.preventDefault();
-		let connectButton = document.querySelector(".connectmetamask");
 		if (connection !== "Not Connected") {
-			// console.log(" connected. Disconnecting");
-			// //setMetaMask(false);
-			// connectButton.disabled = false;
-			document.querySelector("#connectedIcon").classList =
-				"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
-			setConnection("Not Connected");
 		} else {
 			console.log(" not connected. Connecting...");
 			await ethereum.request({ method: "eth_requestAccounts" });
 			web3 = new Web3(window.ethereum);
-			let address = await web3.eth
+			web3.eth
 				.getAccounts()
-				.then((address) => {
-					console.log(address[0].slice(0, 10) + "...");
-					return address[0].slice(0, 10) + "...";
+				.then(async (account) => {
+					setConnection(account[0].slice(0, 10) + "...");
+					document.querySelector("#connectedIcon").classList =
+						"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
 				})
-				.catch((error) => console.log(error));
-			setConnection(address);
-			// web3.eth.getAccounts().then((address) => {});
-			document.querySelector("#connectedIcon").classList =
-				"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
+				.catch(async (error) => {
+					setConnection("Not Connected");
+					document.querySelector("#connectedIcon").classList =
+						"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
+				});
 		}
 	};
 

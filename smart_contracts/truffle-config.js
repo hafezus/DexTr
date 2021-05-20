@@ -69,8 +69,8 @@ module.exports = {
 		kovan: {
 			provider: () =>
 				new HDWalletProvider(
-					`${mnemonic}`,
-					`https://kovan.infura.io/v3/${infuraKey}`
+					`device surge lunar radar uniform dove pond ranch assist sugar grit jealous`,
+					`https://kovan.infura.io/v3/19f8664e78aa4441a3ca849359613a8c`
 				),
 			network_id: 42, // Kovan's id
 			gas: 5500000, // Kovan has a lower block limit than mainnet

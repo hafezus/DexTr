@@ -17,17 +17,20 @@ const WalletTransactions = ({ data }) => {
 	// ];
 
 	const [txType, setTxtype] = useState(0);
+	const [events, setEvents] = useState([]);
+	useEffect(async () => {
+		setEvents(data);
+		return;
+	}, [events]);
+	// const array = [];
 
-	//const [data, setData] = useState([]);
-	//1 -> Buy Event
-	//2 -> Sell Event
-	//const contracts = await initializeContracts();
-	// let data = [];
-	// useEffect(async () => {
-	// 	const contracts = initializeContracts();
-	// 	console.log(contracts.events);
-	// 	return;
-	// }, []);
+	// useEffect(() => {
+	// 	let i = 0;
+	// 	data.forEach((item) => {
+	// 		array.push(i++);
+	// 	});
+	// 	console.log(array);
+	// }, [data]);
 
 	return (
 		<div className="flex flex-col w-2/3 mx-auto mt-32 shadow-xl">
@@ -39,25 +42,25 @@ const WalletTransactions = ({ data }) => {
 								<tr>
 									<th
 										scope="col"
-										className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+										className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
 									>
 										Event
 									</th>
 									<th
 										scope="col"
-										className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+										className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
 									>
 										DXT Amount
 									</th>
 									<th
 										scope="col"
-										className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+										className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
 									>
 										Wallet
 									</th>
 									<th
 										scope="col"
-										className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+										className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
 									>
 										TxHash
 									</th>
@@ -65,9 +68,9 @@ const WalletTransactions = ({ data }) => {
 							</thead>
 							<tbody className="bg-white divide-y divide-gray-200">
 								{/* {console.log(data)} */}
-								{data.map((data) => (
-									<tr key={data.transactionHash}>
-										<td className="px-2 py-4 whitespace-nowrap">
+								{data.map((data, index) => (
+									<tr key={index}>
+										<td className=" py-4 whitespace-nowrap">
 											<div className="flex items-center">
 												<div className="ml-4">
 													<div className="text-xs font-mono text-gray-900">
@@ -76,19 +79,19 @@ const WalletTransactions = ({ data }) => {
 												</div>
 											</div>
 										</td>
-										<td className="px-6 py-4 whitespace-nowrap">
-											<div className="text-xs font-mono text-gray-900">
-												{data.returnValues[1] * 10e-19}
+										<td className=" py-4 whitespace-nowrap">
+											<div className="text-xs font-mono text-gray-900 mx-10">
+												{Number.parseInt(data.returnValues[1] * 10e-19)}
 											</div>
 										</td>
-										<td className="px-6 py-4 whitespace-nowrap">
+										<td className=" py-4 whitespace-nowrap">
 											<span className="text-xs font-mono text-gray-900">
-												{data.returnValues[0]}
+												{data.returnValues[0].slice(0, 20) + "..."}
 											</span>
 										</td>
-										<td className="px-6 py-4 whitespace-nowrap">
+										<td className=" py-4 whitespace-nowrap">
 											<span className="text-xs font-mono text-gray-900">
-												{data.transactionHash}
+												{data.transactionHash.slice(0, 20) + "..."}
 											</span>
 										</td>
 									</tr>
