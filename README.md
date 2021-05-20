@@ -1,5 +1,6 @@
 ### Some Information about the App
 
+- Smart Contracts deployed to https://kovan.etherscan.io
 - Contract Address: 0x86FC74fc04bF37CD52e4688EE58DC3C791123D09
 - User can buy DXT tokens from the contract and sell DXT tokens to the contract (if the contract has sufficient ETHER balance)
 - User can view all Purchase and Sale transaction events
