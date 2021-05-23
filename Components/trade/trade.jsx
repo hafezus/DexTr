@@ -1,7 +1,6 @@
 import React from "react";
 import { Switch } from "@headlessui/react";
 import { useState, useEffect } from "react";
-import Web3 from "web3";
 import GraphData from "./graphdata";
 import { FaEthereum } from "react-icons/fa";
 import { initializeWeb3, initializeContracts } from "../../web3.js";
@@ -49,7 +48,7 @@ const Trade = () => {
 	const [contracts, setContracts] = useState(undefined);
 
 	useEffect(async () => {
-		//on page load initialize web3 and setup contracts, current user account, etc.
+		//on page load initialize web3, contracts & current user account.
 		const web3js = await initializeWeb3();
 		setWeb3(web3js);
 		const contracts = await initializeContracts();
@@ -130,7 +129,6 @@ const Trade = () => {
 	};
 
 	const calculateEth = async (e) => {
-		//let balance = await web3.eth.getBalance(account).then((balance) => balance);
 		try {
 			let currentAmount = await contracts.tradeHelperContract.methods
 				._convertToEth(e.target.value)

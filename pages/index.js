@@ -7,14 +7,8 @@ import Footer from "../Components/footer";
 import axios from "axios";
 
 /* 
-
-/				--->	wallet/Wallet	--->	WalletProfile	+	WalletDetails 	+	[WalletPortfolio]
-/transactions	--->	wallet/Wallet	--->	WalletProfile	+	WalletDetails	+	[WalletTransactions]
-
-
-Fix the directory structure 
-(1) place walletTransactions within the wallet folder, delete transactions/wallet.jsx
-(2) Remove pages/posts/ directory
+	index 	--> trade			--> buy & sell dxt + fetch subgraph API data
+			--> transactions	--> Fetch Buy & Sell events
 */
 
 export default function Home() {
