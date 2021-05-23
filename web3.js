@@ -42,6 +42,7 @@ const initializeContracts = async () => {
 				from: accounts[0],
 			});
 
+		eventsList = [];
 		await tradeContract
 			.getPastEvents(
 				"NewPurchase",

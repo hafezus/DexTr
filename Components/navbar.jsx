@@ -18,26 +18,17 @@ function Connection() {
 	const [connection, setConnection] = useState("Not Connected");
 
 	useEffect(() => {
-		//Update connection status on navbar
-		// if (window.ethereum) {
-		// 	web3 = new Web3(window.ethereum);
-		// 	// document.querySelector("#connectedIcon").classList =
-		// 	// 	"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
-		// } else {
-		// 	// document.querySelector("#connectedIcon").classList =
-		// 	// 	"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
-		// }
 		let web3 = new Web3(window.ethereum);
 
 		web3.eth
 			.getAccounts()
-			.then(async (account) => {
+			.then((account) => {
 				setConnection(account[0].slice(0, 10) + "...");
 				document.querySelector("#connectedIcon").classList =
 					"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
 				return;
 			})
-			.catch(async (error) => {
+			.catch((error) => {
 				setConnection("Not Connected");
 				document.querySelector("#connectedIcon").classList =
 					"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
@@ -55,12 +46,12 @@ function Connection() {
 			web3 = new Web3(window.ethereum);
 			web3.eth
 				.getAccounts()
-				.then(async (account) => {
+				.then((account) => {
 					setConnection(account[0].slice(0, 10) + "...");
 					document.querySelector("#connectedIcon").classList =
 						"-mr-1 ml-2 h-3 w-3 connected:text-green-500 text-green-500";
 				})
-				.catch(async (error) => {
+				.catch((error) => {
 					setConnection("Not Connected");
 					document.querySelector("#connectedIcon").classList =
 						"-mr-1 ml-2 h-3 w-3 connected:text-red-500 text-red-500";
@@ -172,7 +163,6 @@ const Navbar = () => {
 							? `px-5 h-full hover:underline mx-auto font-semibold border-b-4 border-pink-400 pt-5`
 							: "px-5 h-full hover:underline mx-auto font-semibold pt-5"
 					}
-					// border-b-4 transactionspage
 				>
 					<Link href={`/transactions`}>
 						<a>Transactions</a>
@@ -183,10 +173,6 @@ const Navbar = () => {
 			<div className="flex my-auto w-1/4 justify-end sm:self-center">
 				<Connection />
 			</div>
-			{/* <div className="flex-grow w-1/4 my-auto self-end">
-				<Connection />
-			</div> */}
-			{/* <GrStatusGoodSmall className="my-auto mx-5 h-20 fill-current connected:text-green-500 text-red-500" /> */}
 		</div>
 	);
 };
