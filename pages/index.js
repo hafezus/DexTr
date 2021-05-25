@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { siteTitle } from "../Components/layout";
+import { siteTitle } from "../Components/Layout";
 import Navbar from "../Components/Navbar";
 import Trade from "../Components/trade/Trade";
 import Footer from "../Components/Footer";
