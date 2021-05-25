@@ -1,8 +1,8 @@
 import Head from "next/head";
-import { siteTitle } from "../Components/Layout";
-import Navbar from "../Components/Navbar";
-import Trade from "../Components/trade/Trade";
-import Footer from "../Components/Footer";
+import { siteTitle } from "../components/Layout";
+import Navbar from "../components/Navbar";
+import Trade from "../components/trade/Trade";
+import Footer from "../components/Footer";
 
 export default function Home() {
 	return (
