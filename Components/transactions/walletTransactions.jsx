@@ -3,35 +3,11 @@ import { useState, useEffect } from "react";
 import { initializeContracts } from "../../web3.js";
 
 const WalletTransactions = ({ data }) => {
-	// const people = [
-	// 	{
-	// 		name: "Jane Cooper",
-	// 		title: "Regional Paradigm Technician",
-	// 		department: "Optimization",
-	// 		role: "Admin",
-	// 		email: "jane.cooper@example.com",
-	// 		image:
-	// 			"https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-	// 	},
-	// 	// More people...
-	// ];
-
-	const [txType, setTxtype] = useState(0);
 	const [events, setEvents] = useState([]);
 	useEffect(() => {
 		setEvents(data);
 		return;
 	}, [events]);
-	// const array = [];
-
-	// useEffect(() => {
-	// 	let i = 0;
-	// 	data.forEach((item) => {
-	// 		array.push(i++);
-	// 	});
-	// 	console.log(array);
-	// }, [data]);
-
 	return (
 		<div className="flex flex-col w-2/3 mx-auto mt-32 shadow-xl">
 			<div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
