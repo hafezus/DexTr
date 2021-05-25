@@ -1,10 +1,8 @@
 import Head from "next/head";
-import Layout, { siteTitle } from "../Components/layout";
-//import utilStyles from "../styles/utils.module.css";
-import Navbar from "../Components/navbar";
-import Trade from "../Components/trade/trade";
-import Footer from "../Components/footer";
-import axios from "axios";
+import { siteTitle } from "../Components/layout";
+import Navbar from "../Components/Navbar";
+import Trade from "../Components/trade/Trade";
+import Footer from "../Components/Footer";
 
 /* 
 	index 	--> trade			--> buy & sell dxt + fetch subgraph API data
@@ -14,8 +12,6 @@ import axios from "axios";
 export default function Home() {
 	return (
 		<div className="bg-gray-100">
-			{/* overflow hidden prevents Wallet contents from leaking into Footer */}
-			{/* className={utilStyles} */}
 			<Head>
 				<title>{siteTitle}</title>
 			</Head>
