@@ -23,7 +23,7 @@ contract TradeDxt is ERC20, TradeHelper {
     }
     //buy dxt from contract (pay contract with ether amount specified in front-end)
     function buyDxt(address _buyer, uint256 _amount) public payable nonZeroAddress(_buyer) {
-        require(msg.sender == _buyer && _amount < totalSupply(), "Error: Not enough Ether in address");
+        require(_amount < totalSupply(), "Error: Not enough Ether in address");
         _transfer(address(this), _buyer, _amount * (10 ** uint256(decimals())));
         require(msg.value>0, "No ether sent");
         emit NewPurchase(_buyer, _amount*(10 ** uint256(decimals())));
