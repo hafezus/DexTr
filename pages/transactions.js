@@ -16,12 +16,10 @@ const Transactions = () => {
 
 	return (
 		<div className="bg-gray-100">
-			{/* className={utilStyles} */}
 			<Head>
 				<title>{siteTitle}</title>
 			</Head>
 			<Navbar />
-			{/* <Wallet /> */}
 			<WalletTransactions data={data} />
 			<Footer />
 		</div>
