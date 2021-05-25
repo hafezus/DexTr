@@ -1,17 +1,13 @@
 const Web3 = require("web3");
 const TradeDxt = require("./smart_contracts/build/contracts/TradeDxt.json");
 const TradeHelper = require("./smart_contracts/build/contracts/TradeHelper.json");
-const { networks } = require("./smart_contracts/truffle-config");
 
 let web3js;
-// let id;
 let tradeContract;
 let tradeHelperContract;
 let accounts;
 let contractBalance;
 let eventsList = [];
-// let network;
-// let events = [];
 
 const initializeWeb3 = async () => {
 	if (window.ethereum) {
@@ -29,11 +25,11 @@ const initializeContracts = async () => {
 	if (web3js !== null) {
 		tradeContract = new web3js.eth.Contract(
 			TradeDxt.abi,
-			"0x86FC74fc04bF37CD52e4688EE58DC3C791123D09"
+			"0x142890b23d301b131ae2f8c21421A3e927a805E4"
 		);
 		tradeHelperContract = new web3js.eth.Contract(
 			TradeHelper.abi,
-			"0xca4663F49a439b617955101Bfd440cCC13E1bF4A"
+			"0x509CC6DBE9730467059688Ac545676eB18d002a6"
 		);
 		accounts = await web3js.eth.getAccounts();
 		contractBalance = await tradeContract.methods
@@ -41,7 +37,7 @@ const initializeContracts = async () => {
 			.call({
 				from: accounts[0],
 			});
-
+		eventsList = [];
 		await tradeContract
 			.getPastEvents(
 				"NewPurchase",

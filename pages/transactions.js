@@ -12,7 +12,6 @@ const Transactions = () => {
 	useEffect(async () => {
 		const contracts = await initializeContracts();
 		setData(contracts.eventsList);
-		// console.log(contracts.eventsList);
 	}, []);
 
 	return (

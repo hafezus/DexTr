@@ -18,7 +18,7 @@ const WalletTransactions = ({ data }) => {
 
 	const [txType, setTxtype] = useState(0);
 	const [events, setEvents] = useState([]);
-	useEffect(async () => {
+	useEffect(() => {
 		setEvents(data);
 		return;
 	}, [events]);
