@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch } from "@headlessui/react";
 import { useState, useEffect } from "react";
-import GraphData from "./graphdata";
+import GraphData from "./Graphdata";
 import { FaEthereum } from "react-icons/fa";
 import { initializeWeb3, initializeContracts } from "../../web3.js";
 
