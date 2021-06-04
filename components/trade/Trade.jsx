@@ -171,7 +171,7 @@ const Trade = () => {
 								enabled ? "translate-x-9" : "translate-x-1"
 							} inline-block w-6 h-6 transform bg-white rounded-full z-10`}
 						></span>
-						<span className="not-sr-only absolute top-2 left-0 pl-10 text-xs text-white">
+						<span className="not-sr-only absolute top-2 left-0 pl-9 text-xs text-white">
 							Sell
 						</span>
 					</Switch>
